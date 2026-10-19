@@ -17,17 +17,7 @@ Replace this paragraph with your own summary of what your version does.
 
 ## How The System Works
 
-Explain your design in plain language.
-
-Some prompts to answer:
-
-- What features does each `Song` use in your system
-  - For example: genre, mood, energy, tempo
-- What information does your `UserProfile` store
-- How does your `Recommender` compute a score for each song
-- How do you choose which songs to recommend
-
-You can include a simple diagram or bullet list if helpful.
+Real-world recommenders combine signals from a listener's behavior, similar users, and item features; this small simulation focuses on content-based matching. Each `Song` stores its ID, title, artist, genre, mood, energy, tempo (BPM), valence, danceability, and acousticness. The `UserProfile` stores a favorite genre and mood, a target energy, and whether the listener likes acoustic music. The `Recommender` gives genre matches the most weight, mood matches the next most, and scores numerical preferences by closeness (so an energy near the user's target earns more than an energy that is merely higher or lower); acousticness is considered against the user's acoustic preference. It scores each song, sorts songs from highest to lowest score, and returns the top `k` as recommendations.
 
 ---
 
@@ -41,6 +31,8 @@ You can include a simple diagram or bullet list if helpful.
    python -m venv .venv
    source .venv/bin/activate      # Mac or Linux
    .venv\Scripts\activate         # Windows
+
+   ```
 
 2. Install dependencies
 
@@ -79,7 +71,7 @@ Paste a sample of your recommender's output here as a text block so a reader can
 #   3. ...
 ```
 
-**Screenshot or video** *(optional)*: <!-- Insert a screenshot or demo video link here -->
+**Screenshot or video** _(optional)_: <!-- Insert a screenshot or demo video link here -->
 
 ---
 
@@ -117,6 +109,3 @@ Write 1 to 2 paragraphs here about what you learned:
 
 - about how recommenders turn data into predictions
 - about where bias or unfairness could show up in systems like this
-
-
-

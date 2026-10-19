@@ -9,3 +9,13 @@ id,title,artist,genre,mood,energy,tempo_bpm,valence,danceability,acousticness
 8,Night Drive Loop,Neon Echo,synthwave,moody,0.75,110,0.49,0.73,0.22
 9,Focus Flow,LoRoom,lofi,focused,0.40,80,0.59,0.60,0.78
 10,Rooftop Lights,Indigo Parade,indie pop,happy,0.76,124,0.81,0.82,0.35
+11,Open Road,Maple Horizon,country,adventurous,0.78,108,0.82,0.74,0.24
+12,Island Promise,Coral Rhythm,reggae,romantic,0.63,92,0.76,0.86,0.31
+13,Quiet Cathedral,Elena Voss,classical,serene,0.22,66,0.38,0.18,0.94
+14,Iron Comet,Black Meridian,metal,defiant,0.96,168,0.42,0.51,0.03
+15,Neon Shuffle,The Pocket,funk,playful,0.84,116,0.91,0.93,0.12
+16,Letters from Home,June Wilder,folk,nostalgic,0.46,88,0.64,0.39,0.83
+17,Blue Hour Train,Harbor & Pine,blues,melancholic,0.51,74,0.29,0.47,0.68
+18,Saturday Starlight,Mirrorball Avenue,disco,celebratory,0.89,124,0.95,0.96,0.08
+19,Paper Crown,Static Youth,punk,rebellious,0.92,178,0.58,0.72,0.06
+20,Golden Morning Choir,Grace Meridian,gospel,hopeful,0.73,102,0.88,0.57,0.52
