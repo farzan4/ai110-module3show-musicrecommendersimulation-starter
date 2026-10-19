@@ -80,6 +80,36 @@ def test_score_song_applies_genre_mood_and_energy_weights():
     ]
 
 
+def test_score_song_includes_tempo_similarity_when_target_is_provided():
+    user = {"genre": "pop", "mood": "happy", "energy": 0.8, "target_tempo_bpm": 120}
+    song = {
+        "genre": "pop",
+        "mood": "happy",
+        "energy": 0.8,
+        "tempo_bpm": 110,
+    }
+
+    score, reasons = score_song(user, song)
+
+    assert score == 4.9
+    assert reasons[-1] == "Tempo similarity (+0.90)"
+
+
+def test_oop_recommender_uses_target_tempo_in_explanation():
+    user = UserProfile(
+        favorite_genre="pop",
+        favorite_mood="happy",
+        target_energy=0.8,
+        likes_acoustic=False,
+        target_tempo_bpm=120,
+    )
+    rec = make_small_recommender()
+
+    explanation = rec.explain_recommendation(user, rec.songs[0])
+
+    assert "Tempo similarity (+1.00)" in explanation
+
+
 def test_recommend_songs_ranks_by_weighted_score():
     user = {"genre": "pop", "mood": "happy", "energy": 0.8}
     genre_match = {"title": "Genre match", "genre": "pop", "mood": "calm", "energy": 0.2}

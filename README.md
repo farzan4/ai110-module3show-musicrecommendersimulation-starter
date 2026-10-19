@@ -21,16 +21,16 @@ Real-world recommenders combine signals from a listener's behavior, similar user
 
 #### Finalized Algorithm Recipe
 
-1. Read the user's preferred genre, preferred mood, target energy, and requested number of recommendations (`k`), then load the song catalog from the CSV.
+1. Read the user's preferred genre, preferred mood, target energy, optional target tempo in BPM, and requested number of recommendations (`k`), then load the song catalog from the CSV.
 2. Visit every song and start its score at **0**. Add **2.0 points** if its genre matches the preferred genre and **1.0 point** if its mood matches. Genre and mood comparisons ignore capitalization and surrounding whitespace.
-3. Add energy similarity points, calculated as `max(0, 1 - |song energy - target energy|)`, for up to **1.0 point**. Add the song, its total score, and a short explanation of the scoring reasons to the results.
+3. Add energy similarity points, calculated as `max(0, 1 - |song energy - target energy|)`, for up to **1.0 point**. If a target tempo is provided and the song has a BPM value, add tempo similarity points calculated as `max(0, 1 - |song BPM - target BPM| / 100)`, for up to **1.0 point**. A difference of 100 BPM or more earns zero tempo points. The tempo feature is optional, so existing preference inputs without a target tempo keep their previous scores.
 4. Sort all results from highest to lowest score and return the first `k` (or none if `k` is less than zero).
 
-The `likes_acoustic` preference is stored but is not used in this version of the score; tempo, valence, danceability, and acousticness are also not scoring features yet.
+Each tempo score is included in the explanation as `Tempo similarity (+X.XX)`. The dictionary-based API accepts the user's tempo as `target_tempo_bpm` (or `tempo_bpm` as an alias) and reads each song's value from `tempo_bpm`. The OOP API uses `UserProfile.target_tempo_bpm` and `Song.tempo_bpm`. The `likes_acoustic` preference is stored but is not used in this version of the score; valence, danceability, and acousticness are also not scoring features yet.
 
 #### Potential Biases and Limitations
 
-Genre receives twice the weight of mood, and its match can outweigh a strong mood or energy fit. This may over-prioritize genre and miss great songs that match the user's mood but come from another genre. The current recipe also ignores acoustic preference and several song attributes, and its results depend on which genres, moods, and energy levels are represented in this small catalog.
+Genre receives twice the weight of mood, and its match can outweigh a strong mood or energy fit. This may over-prioritize genre and miss great songs that match the user's mood but come from another genre. Tempo is scored by direct BPM difference, so tracks with half-time or double-time interpretations may not be recognized as a rhythmic match. The current recipe also ignores acoustic preference and several song attributes, and its results depend on which genres, moods, energy levels, and tempos are represented in this small catalog.
 
 ### Recommendation Data Flow
 
@@ -40,7 +40,8 @@ flowchart TD
    B --> C{For each song in the catalog}
    C --> D[Compare song genre and mood<br/>with user preferences]
    D --> E[Calculate energy similarity]
-   E --> F[Combine points into song score<br/>and keep explanation]
+   E --> E2[Calculate tempo similarity<br/>when target BPM is provided]
+   E2 --> F[Combine points into song score<br/>and keep explanation]
    F --> G[Add song, score, and explanation<br/>to scored recommendations]
    G --> C
    C -->|All songs scored| H[Sort by score, highest first]
@@ -92,12 +93,50 @@ You can add more tests in `tests/test_recommender.py`.
 Paste a sample of your recommender's output here as a text block so a reader can see what it produces:
 
 ```
-# e.g.:
-# User profile: genre=indie, mood=chill, energy=low
-# Recommendations:
-#   1. ...
-#   2. ...
-#   3. ...
+Loaded songs: 20
+
+Top 5 recommendations
+========================================
+
+1. Sunrise City
+   Final score: 4.96
+   Reasons:
+     • Genre match (+2.0)
+     • Mood match (+1.0)
+     • Energy similarity (+0.98)
+     • Tempo similarity (+0.98)
+
+
+2. Gym Hero
+   Final score: 3.75
+   Reasons:
+     • Genre match (+2.0)
+     • Energy similarity (+0.87)
+     • Tempo similarity (+0.88)
+
+
+3. Rooftop Lights
+   Final score: 2.92
+   Reasons:
+     • Mood match (+1.0)
+     • Energy similarity (+0.96)
+     • Tempo similarity (+0.96)
+
+
+4. Neon Shuffle
+   Final score: 1.92
+   Reasons:
+     • Energy similarity (+0.96)
+     • Tempo similarity (+0.96)
+
+
+5. Saturday Starlight
+   Final score: 1.87
+   Reasons:
+     • Energy similarity (+0.91)
+     • Tempo similarity (+0.96)
+
+
 ```
 
 **Screenshot or video** _(optional)_: <!-- Insert a screenshot or demo video link here -->
