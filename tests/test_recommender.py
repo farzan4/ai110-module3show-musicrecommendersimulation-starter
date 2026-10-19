@@ -1,4 +1,10 @@
-from src.recommender import Song, UserProfile, Recommender
+from src.recommender import (
+    Song,
+    UserProfile,
+    Recommender,
+    recommend_songs,
+    score_song,
+)
 
 def make_small_recommender() -> Recommender:
     songs = [
@@ -58,4 +64,34 @@ def test_explain_recommendation_returns_non_empty_string():
 
     explanation = rec.explain_recommendation(user, song)
     assert isinstance(explanation, str)
-    assert explanation.strip() != ""
+
+
+def test_score_song_applies_genre_mood_and_energy_weights():
+    user = {"genre": "pop", "mood": "happy", "energy": 0.8}
+    song = {"genre": "POP", "mood": "HAPPY", "energy": 0.6}
+
+    score, reasons = score_song(user, song)
+
+    assert score == 3.8
+    assert reasons == [
+        "Genre match (+2.0)",
+        "Mood match (+1.0)",
+        "Energy similarity (+0.80)",
+    ]
+
+
+def test_recommend_songs_ranks_by_weighted_score():
+    user = {"genre": "pop", "mood": "happy", "energy": 0.8}
+    genre_match = {"title": "Genre match", "genre": "pop", "mood": "calm", "energy": 0.2}
+    mood_and_energy_match = {
+        "title": "Mood and energy match",
+        "genre": "jazz",
+        "mood": "happy",
+        "energy": 0.8,
+    }
+
+    recommendations = recommend_songs(user, [mood_and_energy_match, genre_match], k=2)
+
+    assert recommendations[0][0] is genre_match
+    assert recommendations[0][1] > recommendations[1][1]
+    assert all(explanation.strip() for _, _, explanation in recommendations)
