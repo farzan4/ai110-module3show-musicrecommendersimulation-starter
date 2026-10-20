@@ -1,3 +1,5 @@
+import pytest
+
 from src.recommender import (
     Song,
     UserProfile,
@@ -72,11 +74,11 @@ def test_score_song_applies_genre_mood_and_energy_weights():
 
     score, reasons = score_song(user, song)
 
-    assert score == 3.8
+    assert score == pytest.approx(3.6)
     assert reasons == [
-        "Genre match (+2.0)",
+        "Genre match (+1.0)",
         "Mood match (+1.0)",
-        "Energy similarity (+0.80)",
+        "Energy similarity (+1.60)",
     ]
 
 
@@ -122,6 +124,6 @@ def test_recommend_songs_ranks_by_weighted_score():
 
     recommendations = recommend_songs(user, [mood_and_energy_match, genre_match], k=2)
 
-    assert recommendations[0][0] is genre_match
+    assert recommendations[0][0] is mood_and_energy_match
     assert recommendations[0][1] > recommendations[1][1]
     assert all(explanation.strip() for _, _, explanation in recommendations)

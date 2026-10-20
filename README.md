@@ -151,7 +151,118 @@ Use this section to document the experiments you ran. For example:
 - What happened when you added tempo or valence to the score
 - How did your system behave for different types of users
 
----
+We ran 3 tests for edge-cases of user profiles.
+
+The first {"genre": "pop", "mood": "sad", "energy": 0.9} — tests conflicting mood and energy preferences.
+
+The second {"genre": "pop", "mood": "happy", "energy": 1.5} — checks behavior when energy is outside the expected 0–1 range.
+
+The third {"genre": "pop", "mood": "happy", "energy": 0.8, "likes_acoustic": true} — checks whether the recommender accounts for acoustic preference, which it currently ignores.
+
+Here is the output:
+
+```
+Profile 1: {'genre': 'pop', 'mood': 'sad', 'energy': 0.9}
+Top 5 recommendations
+========================================
+
+1. Gym Hero
+   Final score: 2.97
+   Reasons:
+   • Genre match (+2.0)
+   • Energy similarity (+0.97)
+
+2. Sunrise City
+   Final score: 2.92
+   Reasons:
+   • Genre match (+2.0)
+   • Energy similarity (+0.92)
+
+3. Storm Runner
+   Final score: 0.99
+   Reasons:
+   • Energy similarity (+0.99)
+
+4. Saturday Starlight
+   Final score: 0.99
+   Reasons:
+   • Energy similarity (+0.99)
+
+5. Paper Crown
+   Final score: 0.98
+   Reasons:
+   • Energy similarity (+0.98)
+
+Profile 2: {'genre': 'pop', 'mood': 'happy', 'energy': 1.5}
+Top 5 recommendations
+========================================
+
+1. Sunrise City
+   Final score: 3.32
+   Reasons:
+   • Genre match (+2.0)
+   • Mood match (+1.0)
+   • Energy similarity (+0.32)
+
+2. Gym Hero
+   Final score: 2.43
+   Reasons:
+   • Genre match (+2.0)
+   • Energy similarity (+0.43)
+
+3. Rooftop Lights
+   Final score: 1.26
+   Reasons:
+   • Mood match (+1.0)
+   • Energy similarity (+0.26)
+
+4. Iron Comet
+   Final score: 0.46
+   Reasons:
+   • Energy similarity (+0.46)
+
+5. Paper Crown
+   Final score: 0.42
+   Reasons:
+   • Energy similarity (+0.42)
+
+Profile 3: {'genre': 'pop', 'mood': 'happy', 'energy': 0.8, 'likes_acoustic': True}
+Top 5 recommendations
+========================================
+
+1. Sunrise City
+   Final score: 3.98
+   Reasons:
+   • Genre match (+2.0)
+   • Mood match (+1.0)
+   • Energy similarity (+0.98)
+
+2. Gym Hero
+   Final score: 2.87
+   Reasons:
+   • Genre match (+2.0)
+   • Energy similarity (+0.87)
+
+3. Rooftop Lights
+   Final score: 1.96
+   Reasons:
+   • Mood match (+1.0)
+   • Energy similarity (+0.96)
+
+4. Open Road
+   Final score: 0.98
+   Reasons:
+   • Energy similarity (+0.98)
+
+5. Neon Shuffle
+   Final score: 0.96
+   Reasons:
+   • Energy similarity (+0.96)
+
+
+```
+
+For profile 3, “Sunrise City” ranked first with a score of 3.98. It matches the preferred genre (pop) for +2.0 points and mood (happy) for +1.0. Its energy of 0.82 is close to the target of 0.8, earning +0.98. Together, those points make it the strongest match. The profile’s likes_acoustic preference does not affect the score because acousticness is not currently used.
 
 ## Limitations and Risks
 
