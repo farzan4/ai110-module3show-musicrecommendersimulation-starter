@@ -19,27 +19,38 @@ def main() -> None:
     songs = load_songs(str(songs_path))
     print(f"Loaded songs: {len(songs)}")
 
-    # Example listener: prefers pop and happy songs, high energy, and
-    # does not specifically prefer acoustic music.
-    user_prefs = {
-        "genre": "pop",
-        "mood": "happy",
-        "energy": 0.8,
-        "target_tempo_bpm": 120,
-        "likes_acoustic": False,
-    }
+    user_profiles = [
+        {
+            "genre": "pop",
+            "mood": "sad",
+            "energy": 0.9,
+        },
+        {
+            "genre": "pop",
+            "mood": "happy",
+            "energy": 1.5,
+        },
+        {
+            "genre": "pop",
+            "mood": "happy",
+            "energy": 0.8,
+            "likes_acoustic": True,
+        },
+    ]
 
-    recommendations = recommend_songs(user_prefs, songs, k=5)
+    for profile_number, user_prefs in enumerate(user_profiles, start=1):
+        recommendations = recommend_songs(user_prefs, songs, k=5)
 
-    print(f"\nTop {len(recommendations)} recommendations")
-    print("=" * 40)
-    for rank, rec in enumerate(recommendations, start=1):
-        song, score, explanation = rec
-        print(f"\n{rank}. {song['title']}")
-        print(f"   Final score: {score:.2f}")
-        print("   Reasons:")
-        for reason in explanation.split("; "):
-            print(f"     • {reason}")
+        print(f"\nProfile {profile_number}: {user_prefs}")
+        print(f"Top {len(recommendations)} recommendations")
+        print("=" * 40)
+        for rank, rec in enumerate(recommendations, start=1):
+            song, score, explanation = rec
+            print(f"\n{rank}. {song['title']}")
+            print(f"   Final score: {score:.2f}")
+            print("   Reasons:")
+            for reason in explanation.split("; "):
+                print(f"     • {reason}")
         print()
 
 
